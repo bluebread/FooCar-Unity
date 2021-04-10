@@ -161,6 +161,12 @@ MonoBehaviour:
   abs_anchor_angle: 0
   pathSpace: 0
   meshRoadWidth: 0
+  forceMultiplier: 0
+  tickerStart: 0
+  tickerEnd: 0
+  tickerSpace: 0
+  runningPenalty: 0
+  failurePenalty: 0
   enableFrictionAccident: 0
   FrictionAccidentTime: 0
   staticFriction: 0
@@ -174,12 +180,6 @@ MonoBehaviour:
   LossControlTime: 0
   ctrlXaxisMultiplier: 0
   ctrlZaxisMultiplier: 0
-  forceMultiplier: 0
-  tickerStart: 0
-  tickerEnd: 0
-  tickerSpace: 0
-  runningPenalty: 0
-  failurePenalty: 0
 --- !u!4 &29245759
 Transform:
   m_ObjectHideFlags: 0
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 1
+    VectorObservationSize: 100
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2

@@ -15,35 +15,36 @@ public class CarEnv : MonoBehaviour
     [Header("Random Anchors & BezierPath Parameters")]
     public int num_anchors;                 // default 10
     public float radius_anchor_circle;      // default 8.0
-    public float radius_epsilon_multiplier; // default 0.7
-    public float theta_epsilon_multiplier;  // default 0.7
-    public float abs_anchor_height;         // default 1.0, only for 3d path
-    public float abs_anchor_angle;          // default 15.0, only for 3d path
-    public PathSpace pathSpace;             // default PathSpace.xz
-    public float meshRoadWidth;             // default 1.0
+    public float radius_epsilon_ratio;      // default 0.7
+    public float theta_epsilon_ratio;       // default 0.7
+    public float max_anchor_height;         // default 1.0, only for 3d path
+    public float max_anchor_angle;          // default 15.0, only for 3d path
+    public PathSpace path_space;            // default PathSpace.xz
+    public float road_width;                // default 1.0
     [Header("Agent Setting")]
-    public float forceMultiplier;           // default 10
-    public int tickerStart;                 // default -3
-    public int tickerEnd;                   // default 5
-    public float tickerSpace;               // default 0.2
-    public float runningPenalty;            // default -5.0
-    public float failurePenalty;            // default -100.0
+    public float agent_mass;                // default 1.0
+    public float force_multiplier;          // default 10
+    public int ticker_start;                // default -3
+    public int ticker_end;                  // default 5
+    public float ticker_space;              // default 0.2
+    public float running_penalty;           // default -5.0
+    public float failure_penalty;           // default -100.0
     [Header("Friction Accident Event Parameters")]
     public bool enableFrictionAccident;     // default false
-    public float FrictionAccidentTime;      // default 3.0
-    public float staticFriction;            // default 0.0
-    public float dynamicFriction;           // default 0.0
+    public float frictionchanged_time;      // default 3.0
+    public float static_friction;           // default 0.0
+    public float dynamic_friction;          // default 0.0
     [Header("Wind Accident Event Parameters")]
     public bool enableWindAccident;         // default false
-    public float WindAccidentTime;          // default 3.0
-    public float windForceXaxis;            // default 0.0
-    public float windForceYaxis;            // default 0.0, only for 3d path
-    public float windForceZaxis;            // default 0.0
+    public float wind_time;                 // default 3.0
+    public float wind_force_X;              // default 0.0
+    public float wind_force_Y;              // default 0.0, only for 3d path
+    public float wind_force_Z;              // default 0.0
     [Header("Loss Control Accident Event Parameter")]
     public bool enableLossControlAccident;  // default false
-    public float LossControlTime;           // default 3.0
-    public float ctrlXaxisMultiplier;       // default 1.0
-    public float ctrlZaxisMultiplier;       // default 1.0
+    public float lossctrl_time;             // default 3.0
+    public float lossctrl_Xaxis_ratio;      // default 1.0
+    public float lossctrl_Zaxis_ratio;      // default 1.0
 
     // private
     RoadObject road;
@@ -60,7 +61,7 @@ public class CarEnv : MonoBehaviour
     {
         List<Vector3> anchors = GetRandomAnchors(radius_anchor_circle, num_anchors);
         List<float> angles = GetRandomAngles(num_anchors);
-        road = new RoadObject(anchors, angles, true, pathSpace, BezierPath.ControlMode.Automatic, meshRoadWidth);
+        road = new RoadObject(anchors, angles, true, path_space, BezierPath.ControlMode.Automatic, road_width);
         road.parentObject = gameObject;
         SetAgentOnRandomAnchor();
         InitializeCarAgentComponent();
@@ -71,16 +72,16 @@ public class CarEnv : MonoBehaviour
         List<Vector3> anchors = new List<Vector3>();
 
         float radius = _radius;
-        float r_epsilon = radius * radius_epsilon_multiplier;
+        float r_epsilon = radius * radius_epsilon_ratio;
         float delta_theta = Mathf.PI * 2 / _num_anchors;
-        float t_epsilon = delta_theta * theta_epsilon_multiplier;
+        float t_epsilon = delta_theta * theta_epsilon_ratio;
 
         for (int i = 0; i < _num_anchors; i++)
         {
             float radius_i = Random.Range(radius - r_epsilon, radius + r_epsilon);
             float theta_i = Random.Range(i * delta_theta - t_epsilon, i * delta_theta + t_epsilon);
             float x = radius_i * Mathf.Cos(theta_i);
-            float y = (pathSpace == PathSpace.xyz) ? Random.Range(0, abs_anchor_height) : 0.0f;
+            float y = (path_space == PathSpace.xyz) ? Random.Range(0, max_anchor_height) : 0.0f;
             float z = radius_i * Mathf.Sin(theta_i);
 
             anchors.Add(new Vector3(x, y, z));
@@ -92,7 +93,7 @@ public class CarEnv : MonoBehaviour
     {
         List<float> angles = new List<float>();
         for(int i = 0; i < _num_anchors; i++)
-            angles.Add(Random.Range(-abs_anchor_angle, +abs_anchor_angle));
+            angles.Add(Random.Range(-max_anchor_angle, +max_anchor_angle));
 
         return angles;
     }
@@ -126,9 +127,9 @@ public class CarEnv : MonoBehaviour
     // Accident events
     void RegisterAccidents()
     {
-        Invoke("FrictionAccident", FrictionAccidentTime);
-        Invoke("WindAccident", WindAccidentTime);
-        Invoke("LossControlAccident", LossControlTime);
+        Invoke("FrictionAccident", frictionchanged_time);
+        Invoke("WindAccident", wind_time);
+        Invoke("LossControlAccident", lossctrl_time);
     }
     void FrictionAccident()
     {
@@ -136,8 +137,8 @@ public class CarEnv : MonoBehaviour
 
         Debug.Log("FrictionAccident happen !");
         PhysicMaterial material = new PhysicMaterial();
-        material.staticFriction = staticFriction;
-        material.dynamicFriction = dynamicFriction;
+        material.staticFriction = static_friction;
+        material.dynamicFriction = dynamic_friction;
         material.frictionCombine = PhysicMaterialCombine.Average;
 
         road.physicalMaterial = material;
@@ -149,9 +150,9 @@ public class CarEnv : MonoBehaviour
         Debug.Log("WindAccident happen !");
         CarAgent component = agent.GetComponent<CarAgent>();
         Vector3 windForce = new Vector3();
-        windForce.x = windForceXaxis;
-        windForce.y = (pathSpace == PathSpace.xz) ? 0.0f : windForceYaxis;
-        windForce.z = windForceZaxis;
+        windForce.x = wind_force_X;
+        windForce.y = (path_space == PathSpace.xz) ? 0.0f : wind_force_Y;
+        windForce.z = wind_force_Z;
         component.windForce = windForce;
     }
     void LossControlAccident()
@@ -160,8 +161,8 @@ public class CarEnv : MonoBehaviour
 
         Debug.Log("LossControl happen !");
         CarAgent component = agent.GetComponent<CarAgent>();
-        component.ctrlXaxisMultiplier = ctrlXaxisMultiplier;
-        component.ctrlZaxisMultiplier = ctrlZaxisMultiplier;
+        component.ctrlXaxisMultiplier = lossctrl_Xaxis_ratio;
+        component.ctrlZaxisMultiplier = lossctrl_Zaxis_ratio;
     }
     // Configuration
     void SetupCarEnvConfiguration()
@@ -170,46 +171,48 @@ public class CarEnv : MonoBehaviour
         // Random Anchors & BezierPath Parameters
         num_anchors = (int)parameters.GetWithDefault("num_anchors", 10.0f);
         radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 8.0f);
-        radius_epsilon_multiplier = parameters.GetWithDefault("radius_epsilon_multiplier", 0.7f);
-        theta_epsilon_multiplier = parameters.GetWithDefault("theta_epsilon_multiplier", 0.7f);
-        abs_anchor_height = parameters.GetWithDefault("abs_anchor_height", 3.0f);
-        abs_anchor_angle = parameters.GetWithDefault("abs_anchor_angle", 15.0f);
-        pathSpace = (PathSpace)parameters.GetWithDefault("pathSpace", (float)PathSpace.xz);
-        meshRoadWidth = parameters.GetWithDefault("meshRoadWidth", 1.0f);
+        radius_epsilon_ratio = parameters.GetWithDefault("radius_epsilon_ratio", 0.7f);
+        theta_epsilon_ratio = parameters.GetWithDefault("theta_epsilon_ratio", 0.7f);
+        max_anchor_height = parameters.GetWithDefault("max_anchor_height", 3.0f);
+        max_anchor_angle = parameters.GetWithDefault("max_anchor_angle", 15.0f);
+        path_space = (PathSpace)parameters.GetWithDefault("path_space", (float)PathSpace.xz);
+        road_width = parameters.GetWithDefault("road_width", 1.0f);
+        // Agent Setting
+        agent_mass = parameters.GetWithDefault("agent_mass", 1.0f);
+        force_multiplier = parameters.GetWithDefault("force_multiplier", 10.0f);
+        ticker_start = (int)parameters.GetWithDefault("ticker_start", -3.0f);
+        ticker_end = (int)parameters.GetWithDefault("ticker_end", 5.0f);
+        ticker_space = parameters.GetWithDefault("ticker_space", 0.0f);
+        running_penalty = parameters.GetWithDefault("running_penalty", -5.0f);
+        failure_penalty = parameters.GetWithDefault("failure_penalty", -100.0f);
         // Friction Accident Event Parameters
         enableFrictionAccident = (parameters.GetWithDefault("enableFrictionAccident", 0.0f) > 0.0f);
-        FrictionAccidentTime = parameters.GetWithDefault("FrictionAccidentTimeRange", 3.0f);
-        staticFriction = parameters.GetWithDefault("staticFrictionRange", 0.0f);
-        dynamicFriction = parameters.GetWithDefault("dynamicFrictionRange", 0.0f);
+        frictionchanged_time = parameters.GetWithDefault("frictionchanged_time", 3.0f);
+        static_friction = parameters.GetWithDefault("static_friction", 0.0f);
+        dynamic_friction = parameters.GetWithDefault("dynamic_friction", 0.0f);
         // Wind Accident Event Parameters
         enableWindAccident = (parameters.GetWithDefault("enableWindAccident", 0.0f) > 0.0f);
-        WindAccidentTime = parameters.GetWithDefault("WindAccidentTimeRange", 3.0f);
-        windForceXaxis = parameters.GetWithDefault("windForceXaxisRange", 0.0f);
-        windForceYaxis = parameters.GetWithDefault("windForceYaxisRange", 0.0f);
-        windForceZaxis = parameters.GetWithDefault("windForceZaxisRange", 0.0f);
+        wind_time = parameters.GetWithDefault("wind_time", 3.0f);
+        wind_force_X = parameters.GetWithDefault("wind_force_X", 0.0f);
+        wind_force_Y = parameters.GetWithDefault("wind_force_Y", 0.0f);
+        wind_force_Z = parameters.GetWithDefault("wind_force_Z", 0.0f);
         // Loss Control Accident Event Parameter
         enableLossControlAccident = (parameters.GetWithDefault("enableLossControlAccident", 0.0f) > 0.0f);
-        LossControlTime = parameters.GetWithDefault("LossControlTime", 3.0f);
-        ctrlXaxisMultiplier = parameters.GetWithDefault("ctrlXaxisMultiplier", 1.0f);
-        ctrlZaxisMultiplier = parameters.GetWithDefault("ctrlZaxisMultiplier", 1.0f);
-        // Agent Setting
-        forceMultiplier = parameters.GetWithDefault("forceMultiplier", 10.0f);
-        tickerStart = (int)parameters.GetWithDefault("tickerStart", -3.0f);
-        tickerEnd = (int)parameters.GetWithDefault("tickerEnd", 5.0f);
-        tickerSpace = parameters.GetWithDefault("tickerSpace", 0.0f);
-        runningPenalty = parameters.GetWithDefault("runningPenalty", -5.0f);
-        failurePenalty = parameters.GetWithDefault("failurePenalty", -100.0f);
+        lossctrl_time = parameters.GetWithDefault("lossctrl_time", 3.0f);
+        lossctrl_Xaxis_ratio = parameters.GetWithDefault("lossctrl_Xaxis_ratio", 1.0f);
+        lossctrl_Zaxis_ratio = parameters.GetWithDefault("lossctrl_Zaxis_ratio", 1.0f);
     }
     void SetupAgentConfiguration()
     {
-        Debug.Log("SetupAgentConfiguration");
+        Rigidbody rigidbody = agent.GetComponent<Rigidbody>();
+        rigidbody.mass = agent_mass;
 
         CarAgent carAgent = agent.GetComponent<CarAgent>();
-        carAgent.xyz_mode = (pathSpace == PathSpace.xyz);
-        carAgent.forceMultiplier = forceMultiplier;
-        carAgent.tickerStart = tickerStart;
-        carAgent.tickerEnd = tickerEnd;
-        carAgent.running_penalty = runningPenalty;
-        carAgent.failure_penalty = failurePenalty;
+        carAgent.xyz_mode = (path_space == PathSpace.xyz);
+        carAgent.forceMultiplier = force_multiplier;
+        carAgent.tickerStart = ticker_start;
+        carAgent.tickerEnd = ticker_end;
+        carAgent.running_penalty = running_penalty;
+        carAgent.failure_penalty = failure_penalty;
     }
 }
