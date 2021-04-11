@@ -70,10 +70,10 @@ public class RoadObject
 
         pathCreator.bezierPath = new BezierPath(points, isClosed, space);
         pathCreator.bezierPath.ControlPointMode = mode;
-        
+
         //pathCreator.bezierPath.ResetNormalAngles();
         for (int i = 0; i < pathCreator.bezierPath.NumAnchorPoints; i++)
-                pathCreator.bezierPath.SetAnchorNormalAngle(i, this.roadMaxAngles[i]);
+            pathCreator.bezierPath.SetAnchorNormalAngle(i, this.roadMaxAngles[i]);
     }
 
     void MeshInitialize()

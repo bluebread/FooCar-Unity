@@ -32,9 +32,9 @@ public class CarAgent : Agent
     {
         get
         {
-            int basic_num = 3 + (xyz_mode ? 3 : 2);
-            int point_dim = xyz_mode ? 6 : 4;
-            return basic_num + point_dim * (tickerEnd - tickerStart + 1);
+            int basic_num = 6;
+            int point_dim = xyz_mode ? 3 : 2;
+            return basic_num + 2 * point_dim * (tickerEnd - tickerStart + 1);
         }
     }
 
@@ -55,18 +55,16 @@ public class CarAgent : Agent
             transform.localPosition = startPosition;
         }
     }
-
     public override void CollectObservations(VectorSensor sensor)
     {
+        // # Basic information
         Rigidbody rBody = GetComponent<Rigidbody>();
-        // Agent positions
+        // Agent positions & velocity
         sensor.AddObservation(this.transform.localPosition);
-        // Agent velocity
-        AddObservationInXYZMode(sensor, rBody.velocity);
-        // Around path points
-        string log = this.transform.localPosition + "/points:";
+        sensor.AddObservation(rBody.velocity);
+        // # Collect Path's observations
         float centerDistance = vertexPath.GetClosestDistanceAlongPath(this.transform.localPosition);
-        for(int d = tickerStart; d <= tickerEnd; d++)
+        for (int d = tickerStart; d <= tickerEnd; d++)
         {
             float distance = centerDistance + d * tickerSpace;
             Vector3 point = vertexPath.GetPointAtDistance(distance, EndOfPathInstruction.Loop);
@@ -74,14 +72,11 @@ public class CarAgent : Agent
 
             AddObservationInXYZMode(sensor, point);
             AddObservationInXYZMode(sensor, normal);
-
-            log += "(" + point.x + ", " + point.z + ") -> ";
         }
-        //Debug.Log(log);
-
+        // # Padding observations
         // If custom setting will have too more observations and cause the buffer overflow, We
         // must warn user (in Pyhon interface level).
-        // Here we padding the observation buffer with all zero
+        // Here we are padding the observation buffer with all zero
         int MaxObservationSize = GetComponent<BehaviorParameters>().BrainParameters.VectorObservationSize;
         for (int i = 0; i < MaxObservationSize - ObservationSize; i++)
             sensor.AddObservation(0);

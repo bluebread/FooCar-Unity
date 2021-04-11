@@ -63,6 +63,7 @@ public class CarEnv : MonoBehaviour
         List<float> angles = GetRandomAngles(num_anchors);
         road = new RoadObject(anchors, angles, true, path_space, BezierPath.ControlMode.Automatic, road_width);
         road.parentObject = gameObject;
+        SetRoadPhysicalMaterial(1.0f, 1.0f);
         SetAgentOnRandomAnchor();
         InitializeCarAgentComponent();
     }
@@ -92,7 +93,7 @@ public class CarEnv : MonoBehaviour
     List<float> GetRandomAngles(int _num_anchors)
     {
         List<float> angles = new List<float>();
-        for(int i = 0; i < _num_anchors; i++)
+        for (int i = 0; i < _num_anchors; i++)
             angles.Add(Random.Range(-max_anchor_angle, +max_anchor_angle));
 
         return angles;
@@ -102,7 +103,7 @@ public class CarEnv : MonoBehaviour
         List<Vector3> anchors = this.road.GetAnchors();
         Vector3 position = anchors[Random.Range(0, anchors.Count)];
         position.y += 0.5f;
-        
+
         agent.transform.localPosition = position;
     }
     void InitializeCarAgentComponent()
@@ -110,6 +111,15 @@ public class CarEnv : MonoBehaviour
         CarAgent component = agent.GetComponent<CarAgent>();
         component.vertexPath = this.road.pathCreator.path;
         component.startPosition = agent.transform.localPosition;
+    }
+    void SetRoadPhysicalMaterial(float sf, float df)
+    {
+        PhysicMaterial material = new PhysicMaterial();
+        material.staticFriction = sf;
+        material.dynamicFriction = df;
+        material.frictionCombine = PhysicMaterialCombine.Average;
+
+        road.physicalMaterial = material;
     }
     // Reset Enviroment
     public void Awake()
@@ -121,6 +131,7 @@ public class CarEnv : MonoBehaviour
         if (road != null && !road.Equals(default(RoadObject)))
             road.DestroyGameObject();
         InitializeEnviroment();
+        ClearAgentAccident();
         RegisterAccidents();
     }
 
@@ -136,12 +147,8 @@ public class CarEnv : MonoBehaviour
         if (!enableFrictionAccident) return;
 
         Debug.Log("FrictionAccident happen !");
-        PhysicMaterial material = new PhysicMaterial();
-        material.staticFriction = static_friction;
-        material.dynamicFriction = dynamic_friction;
-        material.frictionCombine = PhysicMaterialCombine.Average;
 
-        road.physicalMaterial = material;
+        SetRoadPhysicalMaterial(static_friction, dynamic_friction);
     }
     void WindAccident()
     {
@@ -214,5 +221,16 @@ public class CarEnv : MonoBehaviour
         carAgent.tickerEnd = ticker_end;
         carAgent.running_penalty = running_penalty;
         carAgent.failure_penalty = failure_penalty;
+
+        carAgent.windForce = Vector3.zero;
+        carAgent.ctrlXaxisMultiplier = 1.0f;
+        carAgent.ctrlZaxisMultiplier = 1.0f;
+    }
+    void ClearAgentAccident()
+    {
+        CarAgent carAgent = agent.GetComponent<CarAgent>();
+        carAgent.windForce = Vector3.zero;
+        carAgent.ctrlXaxisMultiplier = 1.0f;
+        carAgent.ctrlZaxisMultiplier = 1.0f;
     }
 }
