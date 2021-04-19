@@ -55,22 +55,53 @@ public class CarAgent : Agent
             transform.localPosition = startPosition;
         }
     }
+    //public override void CollectObservations(VectorSensor sensor)
+    //{
+    //    // # Basic information
+    //    Rigidbody rBody = GetComponent<Rigidbody>();
+    //    // Agent positions & velocity
+    //    sensor.AddObservation(this.transform.localPosition);
+    //    sensor.AddObservation(rBody.velocity);
+    //    // # Collect Path's observations
+    //    float centerDistance = vertexPath.GetClosestDistanceAlongPath(this.transform.localPosition);
+    //    for (int d = tickerStart; d <= tickerEnd; d++)
+    //    {
+    //        float distance = centerDistance + d * tickerSpace;
+    //        Vector3 point = vertexPath.GetPointAtDistance(distance, EndOfPathInstruction.Loop);
+    //        Vector3 normal = vertexPath.GetNormalAtDistance(distance, EndOfPathInstruction.Loop);
+
+    //        AddObservationInXYZMode(sensor, point);
+    //        AddObservationInXYZMode(sensor, normal);
+    //    }
+    //    // # Padding observations
+    //    // If custom setting will have too more observations and cause the buffer overflow, We
+    //    // must warn user (in Pyhon interface level).
+    //    // Here we are padding the observation buffer with all zero
+    //    int MaxObservationSize = GetComponent<BehaviorParameters>().BrainParameters.VectorObservationSize;
+    //    for (int i = 0; i < MaxObservationSize - ObservationSize; i++)
+    //        sensor.AddObservation(0);
+    //}
     public override void CollectObservations(VectorSensor sensor)
     {
         // # Basic information
         Rigidbody rBody = GetComponent<Rigidbody>();
-        // Agent positions & velocity
+        // Agent velocity
         sensor.AddObservation(this.transform.localPosition);
         sensor.AddObservation(rBody.velocity);
-        // # Collect Path's observations
+        // # Collect Path's basic information
         float centerDistance = vertexPath.GetClosestDistanceAlongPath(this.transform.localPosition);
-        for (int d = tickerStart; d <= tickerEnd; d++)
+        Vector3 direction = vertexPath.GetDirectionAtDistance(centerDistance);
+        // Check clockwise direction & determine ticker's start and end
+        bool clockwise = (Vector3.Dot(rBody.velocity, direction) >= 0);
+        int t_s = clockwise ? tickerStart : -tickerEnd;
+        int t_e = clockwise ? tickerEnd : -tickerStart;
+        // # Collect Path's observations
+        for(int d = t_s; d <= t_e; d++)
         {
             float distance = centerDistance + d * tickerSpace;
             Vector3 point = vertexPath.GetPointAtDistance(distance, EndOfPathInstruction.Loop);
             Vector3 normal = vertexPath.GetNormalAtDistance(distance, EndOfPathInstruction.Loop);
-
-            AddObservationInXYZMode(sensor, point);
+            AddObservationInXYZMode(sensor, point - this.transform.localPosition);
             AddObservationInXYZMode(sensor, normal);
         }
         // # Padding observations
