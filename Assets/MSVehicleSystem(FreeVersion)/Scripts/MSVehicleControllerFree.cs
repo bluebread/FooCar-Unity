@@ -479,6 +479,8 @@ public class MSVehicleControllerFree : MonoBehaviour {
 
 	MSSceneControllerFree controls;
 
+    public float spaceInput = 0.0f;
+
 	void Awake(){
 		enableSkidMarksOnStart = true;
 		DebugStartErrors ();

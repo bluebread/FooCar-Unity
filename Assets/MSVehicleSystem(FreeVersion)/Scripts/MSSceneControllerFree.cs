@@ -58,7 +58,7 @@ public class MSSceneControllerFree : MonoBehaviour {
 	public string _mouseScrollWheelInput = "Mouse ScrollWheel";
 	#endregion
 
-	public enum ControlTypeFree{windows, mobileButton};
+	public enum ControlTypeFree{windows, mobileButton, auto};
 
 	[Space(10)][Tooltip("Here you can configure the vehicle controls, choose the desired inputs and also, deactivate the unwanted ones.")]
 	public ControlsFree controls;
@@ -288,7 +288,12 @@ public class MSSceneControllerFree : MonoBehaviour {
 				mouseXInput = Input.GetAxis (_mouseXInput);
 				mouseYInput = Input.GetAxis (_mouseYInput);
 				mouseScrollWheelInput = Input.GetAxis (_mouseScrollWheelInput);
-				break;
+                break;
+            case ControlTypeFree.auto:
+                mouseXInput = Input.GetAxis(_mouseXInput);
+                mouseYInput = Input.GetAxis(_mouseYInput);
+                mouseScrollWheelInput = Input.GetAxis(_mouseScrollWheelInput);
+                break;
 			}
 			#endregion
 

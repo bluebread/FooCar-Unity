@@ -8,7 +8,7 @@ using PathCreation;
 
 
 
-public class CarEnv : MonoBehaviour
+public class FooEnv : MonoBehaviour
 {
     public GameObject agent;
 
@@ -66,6 +66,7 @@ public class CarEnv : MonoBehaviour
         SetRoadPhysicalMaterial(1.0f, 1.0f);
         SetAgentOnRandomAnchor();
         InitializeCarAgentComponent();
+        agent.gameObject.SetActive(true);
     }
 
     List<Vector3> GetRandomAnchors(float _radius, int _num_anchors)
@@ -102,13 +103,26 @@ public class CarEnv : MonoBehaviour
     {
         List<Vector3> anchors = this.road.GetAnchors();
         Vector3 position = anchors[Random.Range(0, anchors.Count)];
-        position.y += 0.5f;
+        FooAgent fooAgent = agent.GetComponent<FooAgent>();
+        
+        switch(fooAgent.agentType)
+        {
+            case FooAgent.AgentType.Ball:
+                position.y += 0.5f;
+                break;
+            case FooAgent.AgentType.Vehicle:
 
+                position.y += 1.0f;
+                break;
+            default:
+                break;
+        }
+        
         agent.transform.localPosition = position;
     }
     void InitializeCarAgentComponent()
     {
-        CarAgent component = agent.GetComponent<CarAgent>();
+        FooAgent component = agent.GetComponent<FooAgent>();
         component.vertexPath = this.road.pathCreator.path;
         component.startPosition = agent.transform.localPosition;
     }
@@ -155,7 +169,7 @@ public class CarEnv : MonoBehaviour
         if (!enableWindAccident) return;
 
         Debug.Log("WindAccident happen !");
-        CarAgent component = agent.GetComponent<CarAgent>();
+        FooAgent component = agent.GetComponent<FooAgent>();
         Vector3 windForce = new Vector3();
         windForce.x = wind_force_X;
         windForce.y = (path_space == PathSpace.xz) ? 0.0f : wind_force_Y;
@@ -167,7 +181,7 @@ public class CarEnv : MonoBehaviour
         if (!enableLossControlAccident) return;
 
         Debug.Log("LossControl happen !");
-        CarAgent component = agent.GetComponent<CarAgent>();
+        FooAgent component = agent.GetComponent<FooAgent>();
         component.ctrlXaxisMultiplier = lossctrl_Xaxis_ratio;
         component.ctrlZaxisMultiplier = lossctrl_Zaxis_ratio;
     }
@@ -177,13 +191,13 @@ public class CarEnv : MonoBehaviour
         EnvironmentParameters parameters = Academy.Instance.EnvironmentParameters;
         // Random Anchors & BezierPath Parameters
         num_anchors = (int)parameters.GetWithDefault("num_anchors", 10.0f);
-        radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 8.0f);
+        radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 20.0f);
         radius_epsilon_ratio = parameters.GetWithDefault("radius_epsilon_ratio", 0.7f);
         theta_epsilon_ratio = parameters.GetWithDefault("theta_epsilon_ratio", 0.7f);
         max_anchor_height = parameters.GetWithDefault("max_anchor_height", 3.0f);
         max_anchor_angle = parameters.GetWithDefault("max_anchor_angle", 15.0f);
         path_space = (PathSpace)parameters.GetWithDefault("path_space", (float)PathSpace.xz);
-        road_width = parameters.GetWithDefault("road_width", 1.0f);
+        road_width = parameters.GetWithDefault("road_width", 5.0f);
         // Agent Setting
         agent_mass = parameters.GetWithDefault("agent_mass", 1.0f);
         force_multiplier = parameters.GetWithDefault("force_multiplier", 10.0f);
@@ -214,7 +228,7 @@ public class CarEnv : MonoBehaviour
         Rigidbody rigidbody = agent.GetComponent<Rigidbody>();
         rigidbody.mass = agent_mass;
 
-        CarAgent carAgent = agent.GetComponent<CarAgent>();
+        FooAgent carAgent = agent.GetComponent<FooAgent>();
         carAgent.xyz_mode = (path_space == PathSpace.xyz);
         carAgent.forceMultiplier = force_multiplier;
         carAgent.tickerStart = ticker_start;
@@ -228,7 +242,7 @@ public class CarEnv : MonoBehaviour
     }
     void ClearAgentAccident()
     {
-        CarAgent carAgent = agent.GetComponent<CarAgent>();
+        FooAgent carAgent = agent.GetComponent<FooAgent>();
         carAgent.windForce = Vector3.zero;
         carAgent.ctrlXaxisMultiplier = 1.0f;
         carAgent.ctrlZaxisMultiplier = 1.0f;
