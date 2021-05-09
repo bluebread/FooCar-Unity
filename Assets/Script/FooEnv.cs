@@ -125,6 +125,7 @@ public class FooEnv : MonoBehaviour
         FooAgent component = agent.GetComponent<FooAgent>();
         component.vertexPath = this.road.pathCreator.path;
         component.startPosition = agent.transform.localPosition;
+        component.startAngles = agent.transform.eulerAngles;
     }
     void SetRoadPhysicalMaterial(float sf, float df)
     {
@@ -191,9 +192,9 @@ public class FooEnv : MonoBehaviour
         EnvironmentParameters parameters = Academy.Instance.EnvironmentParameters;
         // Random Anchors & BezierPath Parameters
         num_anchors = (int)parameters.GetWithDefault("num_anchors", 10.0f);
-        radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 20.0f);
-        radius_epsilon_ratio = parameters.GetWithDefault("radius_epsilon_ratio", 0.7f);
-        theta_epsilon_ratio = parameters.GetWithDefault("theta_epsilon_ratio", 0.7f);
+        radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 40.0f);
+        radius_epsilon_ratio = parameters.GetWithDefault("radius_epsilon_ratio", 0.4f);
+        theta_epsilon_ratio = parameters.GetWithDefault("theta_epsilon_ratio", 0.4f);
         max_anchor_height = parameters.GetWithDefault("max_anchor_height", 3.0f);
         max_anchor_angle = parameters.GetWithDefault("max_anchor_angle", 15.0f);
         path_space = (PathSpace)parameters.GetWithDefault("path_space", (float)PathSpace.xz);

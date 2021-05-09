@@ -12,6 +12,7 @@ public class FooAgent : Agent
 {
     public VertexPath vertexPath;
     public Vector3 startPosition;
+    public Vector3 startAngles;
 
     // common parameters
     public bool xyz_mode = false;
@@ -77,7 +78,6 @@ public class FooAgent : Agent
         Vector3 direction = vertexPath.GetDirectionAtDistance(distance);
         float angle = Vector3.Angle(new Vector3(0, 0, 1), direction);
         transform.eulerAngles = new Vector3(0, angle, 0);
-        Debug.Log("direction: " + direction);
     }
 
     public override void OnEpisodeBegin()
@@ -91,6 +91,7 @@ public class FooAgent : Agent
             rBody.angularVelocity = Vector3.zero;
             rBody.velocity = Vector3.zero;
             transform.localPosition = startPosition;
+            transform.eulerAngles = startAngles;
         }
     }
     public override void CollectObservations(VectorSensor sensor)
