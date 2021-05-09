@@ -65,19 +65,6 @@ public class FooAgent : Agent
 
     }
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        if (agentType != AgentType.Vehicle) return;
-
-        Vector3 position2D = new Vector3(transform.position.x, 0, transform.position.z);
-        float distance = vertexPath.GetClosestDistanceAlongPath(position2D);
-        Vector3 direction = vertexPath.GetDirectionAtDistance(distance);
-        float angle = Vector3.Angle(new Vector3(0, 0, 1), direction);
-        transform.eulerAngles = new Vector3(0, angle, 0);
-    }
-
     public override void OnEpisodeBegin()
     {
         //if (startPosition.Equals(default(Vector3)))

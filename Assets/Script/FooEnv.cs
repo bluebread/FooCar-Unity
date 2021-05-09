@@ -119,7 +119,15 @@ public class FooEnv : MonoBehaviour
         }
         
         agent.transform.localPosition = position;
+
+        VertexPath vertexPath = this.road.pathCreator.path;
+        float distance = vertexPath.GetClosestDistanceAlongPath(agent.transform.localPosition);
+        Vector3 direction = vertexPath.GetDirectionAtDistance(distance);
+        float angle = Vector3.Angle(new Vector3(0, 0, 1), direction);
+        agent.transform.eulerAngles = new Vector3(0, angle, 0);
+     
     }
+
     void InitializeCarAgentComponent()
     {
         FooAgent component = agent.GetComponent<FooAgent>();
