@@ -62,16 +62,14 @@ public class FooAgent : Agent
 
     void Start()
     {
-        //EnvironmentParameters parameters = Academy.Instance.EnvironmentParameters;
-        ////agentType = (AgentType)(parameters.GetWithDefault("SceneName", 0.0f));
-        //agentType = AgentType.Vehicle;
-        //string SceneName = (agentType == AgentType.Ball) ? "BallScene" : "VehicleScene";
-        //SceneManager.LoadScene(SceneName, LoadSceneMode.Single); // default "BallScene"
+
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
+
+        if (agentType != AgentType.Vehicle) return;
 
         Vector3 position2D = new Vector3(transform.position.x, 0, transform.position.z);
         float distance = vertexPath.GetClosestDistanceAlongPath(position2D);
@@ -171,8 +169,8 @@ public class FooAgent : Agent
 
         Rigidbody rBody = GetComponent<Rigidbody>();
         MSSceneControllerFree sceneController = vehicleControl.GetComponent<MSSceneControllerFree>();
-        sceneController.verticalInput = actionBuffers.ContinuousActions[0];
-        sceneController.horizontalInput = actionBuffers.ContinuousActions[1];
+        sceneController.horizontalInput = actionBuffers.ContinuousActions[0];
+        sceneController.verticalInput = actionBuffers.ContinuousActions[1];
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {

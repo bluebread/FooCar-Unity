@@ -436,6 +436,7 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 200
   startPosition: {x: 0, y: 0, z: 0}
+  startAngles: {x: 0, y: 0, z: 0}
   xyz_mode: 0
   forceMultiplier: 10
   tickerStart: -3
@@ -446,6 +447,10 @@ MonoBehaviour:
   ctrlXaxisMultiplier: 1
   ctrlZaxisMultiplier: 1
   windForce: {x: 0, y: 0, z: 0}
+  LossLeftWheelBreak: 0
+  LossRightWheelBreak: 0
+  vehicleControl: {fileID: 0}
+  agentType: 0
 --- !u!114 &715392780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,6 +526,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f820998cd02b6b44ebb9b4f5e939bdb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  direction: {x: 1, y: 0, z: 1}
 --- !u!4 &1321328229
 Transform:
   m_ObjectHideFlags: 0
