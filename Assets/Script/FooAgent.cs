@@ -51,7 +51,7 @@ public class FooAgent : Agent
     {
         get
         {
-            int basic_num = 6;
+            int basic_num = 9;
             int point_dim = xyz_mode ? 3 : 2;
             return basic_num + 2 * point_dim * (tickerEnd - tickerStart + 1);
         }
@@ -85,6 +85,7 @@ public class FooAgent : Agent
         Rigidbody rBody = GetComponent<Rigidbody>();
         // Agent velocity
         sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(this.transform.localEulerAngles);
         sensor.AddObservation(rBody.velocity);
         // # Collect Path's basic information
         float centerDistance = vertexPath.GetClosestDistanceAlongPath(this.transform.localPosition);
@@ -149,7 +150,7 @@ public class FooAgent : Agent
         controlSignal.z = actionBuffers.ContinuousActions[1] * ctrlZaxisMultiplier;
         rBody.AddForce(controlSignal * forceMultiplier + windForce);
     }
-    
+    //public float show2ndAction = 0.0f;
     public void VehicleActionReceived(ActionBuffers actionBuffers)
     {
         if (!vehicleControl) return;
@@ -158,11 +159,29 @@ public class FooAgent : Agent
         MSSceneControllerFree sceneController = vehicleControl.GetComponent<MSSceneControllerFree>();
         sceneController.horizontalInput = actionBuffers.ContinuousActions[0];
         sceneController.verticalInput = actionBuffers.ContinuousActions[1];
+
+        //float keyInput = actionBuffers.ContinuousActions[2];
+        //MSVehicleControllerFree ctrl = GetComponent<MSVehicleControllerFree>();
+        //bool _state = (keyInput >= 0.5f); // (>= 0.5) -> releasing; (< 0.5) -> pressing 
+        //ctrl.spaceKeyInput = keyInput;
+        //ctrl.spaceKeyDown = (ctrl.spaceKeyState && (!_state)); // releasing to pressing
+        //ctrl.spaceKeyUp = (!(ctrl.spaceKeyState) && _state); // pressing to releasing
+        //ctrl.spaceKeyState = _state;
+        //ctrl.handBrakeTrue = ctrl.spaceKeyDown;
+
+        //show2ndAction = actionBuffers.ContinuousActions[2];
+
+        //if (ctrl.spaceKeyDown == false && ctrl.spaceKeyUp == false) return;
+
+        //Debug.Log(keyInput + ", " + _state + "-> (" + ctrl.spaceKeyDown + ", " + ctrl.spaceKeyUp + ", " + ctrl.spaceKeyState + ")");
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var continuousActionsOut = actionsOut.ContinuousActions;
         continuousActionsOut[0] = Input.GetAxis("Horizontal");
         continuousActionsOut[1] = Input.GetAxis("Vertical");
+
+        //if (agentType == AgentType.Vehicle)
+        //    continuousActionsOut[2] = 1 - Input.GetAxis("Jump");
     }
 }

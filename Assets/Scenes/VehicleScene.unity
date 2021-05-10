@@ -339,6 +339,7 @@ MonoBehaviour:
   LossRightWheelBreak: 0
   vehicleControl: {fileID: 1180845374}
   agentType: 1
+  show2ndAction: 0
 --- !u!114 &901969516
 MonoBehaviour:
   m_ObjectHideFlags: 0

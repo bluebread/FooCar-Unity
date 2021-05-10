@@ -479,7 +479,12 @@ public class MSVehicleControllerFree : MonoBehaviour {
 
 	MSSceneControllerFree controls;
 
-    public float spaceInput = 0.0f;
+    //#region BreadVarialbes
+    //public bool spaceKeyDown = false;
+    //public bool spaceKeyUp = false;
+    //public bool spaceKeyState = true; // true -> releasing; false -> pressing
+    //public float spaceKeyInput = 0.0f;
+    //#endregion
 
 	void Awake(){
 		enableSkidMarksOnStart = true;
@@ -1002,12 +1007,37 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		} else {
 			engineInput = 0;
 		}
-		if (isInsideTheCar) {
-			if (Input.GetKeyDown (controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input && Time.timeScale > 0.2f) {
-				handBrakeTrue = !handBrakeTrue;
-			}
-		}
-		//
+        // origin
+        if (isInsideTheCar)
+        {
+            if (Input.GetKeyDown(controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input && Time.timeScale > 0.2f)
+            {
+                handBrakeTrue = !handBrakeTrue;
+            }
+        }
+        //#region BreadCode
+        //// @hotbread
+        //if (isInsideTheCar)
+        //{
+        //    if (controls.selectControls == MSSceneControllerFree.ControlTypeFree.auto)
+        //    {
+        //        if (spaceKeyDown && controls.controls.enable_handBrakeInput_Input && Time.timeScale > 0.2f)
+        //        {
+        //            Debug.Log("space Key Down!!");
+        //            handBrakeTrue = !handBrakeTrue;
+        //            //spaceKeyDown = false;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (Input.GetKeyDown(controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input && Time.timeScale > 0.2f)
+        //        {
+        //            handBrakeTrue = !handBrakeTrue;
+        //        }
+        //    }
+        //}
+        //#endregion
+        //
 		DiscoverAverageRpm();
 		InputsCameras ();
 		TurnOnAndTurnOff();
@@ -1794,10 +1824,29 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		if (currentBrakeValue > 0.1f) {
 			return 0;
 		}
-		if (Input.GetKey (controls.controls.handBrakeInput)&& controls.controls.enable_handBrakeInput_Input) {
-			return 0;
-		}
-		if (currentGear < 0) {
+        // origin
+        if (Input.GetKey(controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input)
+        {
+            return 0;
+        }
+        //#region BreadCode
+        //// @hotbread
+        //if (controls.selectControls == MSSceneControllerFree.ControlTypeFree.auto)
+        //{
+        //    if ((spaceKeyState == false) && controls.controls.enable_handBrakeInput_Input)
+        //    {
+        //        return 0;
+        //    }
+        //}
+        //else
+        //{
+        //    if (Input.GetKey(controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input)
+        //    {
+        //        return 0;
+        //    }
+        //}
+        //#endregion
+        if (currentGear < 0) {
 			clampInputTorque = Mathf.Abs(Mathf.Clamp(verticalInput, -1f, 0f));
 			torqueM = (500.0f * _vehicleTorque.engineTorque) * clampInputTorque * (_vehicleTorque.gears [0].Evaluate ((KMh / _vehicleTorque.speedOfGear))) * -0.8f;
 		} else if (currentGear == 0) {
@@ -1889,10 +1938,30 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		} else {
 			handBrake_Input = 0;
 		}
-		if (Input.GetKey (controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input) {
-			handBrake_Input = 2;
-		}
-		handBrake_Input = handBrake_Input * 1000;
+        // origin
+        if (Input.GetKey(controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input)
+        {
+            handBrake_Input = 2;
+        }
+        //#region BreadCode
+        //// @hotbread
+        //if (controls.selectControls == MSSceneControllerFree.ControlTypeFree.auto)
+        //{
+        //    if ((spaceKeyState == false) && controls.controls.enable_handBrakeInput_Input)
+        //    {
+        //        handBrake_Input = 2;
+        //    }
+        //}
+        //else
+        //{
+        //    if (Input.GetKey(controls.controls.handBrakeInput) && controls.controls.enable_handBrakeInput_Input)
+        //    {
+        //        handBrake_Input = 2;
+        //    }
+        //}
+        //#endregion
+
+        handBrake_Input = handBrake_Input * 1000;
 		//FREIO TOTAL
 		totalFootBrake = currentBrakeValue * 0.5f * _vehicleSettings.vehicleMass;
 		totalHandBrake = handBrake_Input * 0.5f * _vehicleSettings.vehicleMass;
