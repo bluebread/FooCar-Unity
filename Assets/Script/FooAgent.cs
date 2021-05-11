@@ -51,7 +51,7 @@ public class FooAgent : Agent
     {
         get
         {
-            int basic_num = 6;
+            int basic_num = 9;
             int point_dim = xyz_mode ? 3 : 2;
             return basic_num + 2 * point_dim * (tickerEnd - tickerStart + 1);
         }
@@ -85,6 +85,7 @@ public class FooAgent : Agent
         Rigidbody rBody = GetComponent<Rigidbody>();
         // Agent velocity
         sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(this.transform.localEulerAngles);
         sensor.AddObservation(rBody.velocity);
         // # Collect Path's basic information
         float centerDistance = vertexPath.GetClosestDistanceAlongPath(this.transform.localPosition);
@@ -156,8 +157,8 @@ public class FooAgent : Agent
 
         Rigidbody rBody = GetComponent<Rigidbody>();
         MSSceneControllerFree sceneController = vehicleControl.GetComponent<MSSceneControllerFree>();
-        sceneController.horizontalInput = actionBuffers.ContinuousActions[0];
-        sceneController.verticalInput = actionBuffers.ContinuousActions[1];
+        sceneController.horizontalInput = actionBuffers.ContinuousActions[0] * ctrlXaxisMultiplier;
+        sceneController.verticalInput = actionBuffers.ContinuousActions[1] * ctrlZaxisMultiplier;
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
