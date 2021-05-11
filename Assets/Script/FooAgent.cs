@@ -157,23 +157,8 @@ public class FooAgent : Agent
 
         Rigidbody rBody = GetComponent<Rigidbody>();
         MSSceneControllerFree sceneController = vehicleControl.GetComponent<MSSceneControllerFree>();
-        sceneController.horizontalInput = actionBuffers.ContinuousActions[0];
-        sceneController.verticalInput = actionBuffers.ContinuousActions[1];
-
-        //float keyInput = actionBuffers.ContinuousActions[2];
-        //MSVehicleControllerFree ctrl = GetComponent<MSVehicleControllerFree>();
-        //bool _state = (keyInput >= 0.5f); // (>= 0.5) -> releasing; (< 0.5) -> pressing 
-        //ctrl.spaceKeyInput = keyInput;
-        //ctrl.spaceKeyDown = (ctrl.spaceKeyState && (!_state)); // releasing to pressing
-        //ctrl.spaceKeyUp = (!(ctrl.spaceKeyState) && _state); // pressing to releasing
-        //ctrl.spaceKeyState = _state;
-        //ctrl.handBrakeTrue = ctrl.spaceKeyDown;
-
-        //show2ndAction = actionBuffers.ContinuousActions[2];
-
-        //if (ctrl.spaceKeyDown == false && ctrl.spaceKeyUp == false) return;
-
-        //Debug.Log(keyInput + ", " + _state + "-> (" + ctrl.spaceKeyDown + ", " + ctrl.spaceKeyUp + ", " + ctrl.spaceKeyState + ")");
+        sceneController.horizontalInput = actionBuffers.ContinuousActions[0] * ctrlXaxisMultiplier;
+        sceneController.verticalInput = actionBuffers.ContinuousActions[1] * ctrlZaxisMultiplier;
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {

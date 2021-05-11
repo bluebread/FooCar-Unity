@@ -45,6 +45,8 @@ public class FooEnv : MonoBehaviour
     public float lossctrl_time;             // default 3.0
     public float lossctrl_Xaxis_ratio;      // default 1.0
     public float lossctrl_Zaxis_ratio;      // default 1.0
+    [Header("Other General Enviroment Parameters")]
+    public bool showTickerTrail;
 
     // private
     RoadObject road;
@@ -231,6 +233,8 @@ public class FooEnv : MonoBehaviour
         lossctrl_time = parameters.GetWithDefault("lossctrl_time", 3.0f);
         lossctrl_Xaxis_ratio = parameters.GetWithDefault("lossctrl_Xaxis_ratio", 1.0f);
         lossctrl_Zaxis_ratio = parameters.GetWithDefault("lossctrl_Zaxis_ratio", 1.0f);
+        // Other General Enviroment Parameters
+        showTickerTrail = (parameters.GetWithDefault("showTickerTrail", 1.0f) > 0.0f);
     }
     void SetupAgentConfiguration()
     {
@@ -255,5 +259,49 @@ public class FooEnv : MonoBehaviour
         carAgent.windForce = Vector3.zero;
         carAgent.ctrlXaxisMultiplier = 1.0f;
         carAgent.ctrlZaxisMultiplier = 1.0f;
+    }
+    private void Update()
+    {
+        if (showTickerTrail)
+            showAgentObservationTrail();
+    }
+
+    public List<GameObject> ballList = new List<GameObject>();
+    public GameObject Balls;
+    void showAgentObservationTrail()
+    {
+        int obsNum = ticker_end - ticker_start + 1;
+        VertexPath vertexPath = this.road.pathCreator.path;
+        Rigidbody rBody = agent.GetComponent<Rigidbody>();
+
+        // # Collect Path's basic information
+        float centerDistance = vertexPath.GetClosestDistanceAlongPath(agent.transform.localPosition);
+        Vector3 direction = vertexPath.GetDirectionAtDistance(centerDistance);
+        // Check clockwise direction & determine ticker's start and end
+        bool clockwise = (Vector3.Dot(rBody.velocity, direction) >= 0);
+        int t_s = clockwise ? ticker_start : -ticker_end;
+        int t_e = clockwise ? ticker_end : -ticker_start;
+        // # Collect Path's observations
+        bool listEmpty = (ballList.Count <= 0);
+        for (int d = t_s; d <= t_e; d++)
+        {
+            float distance = centerDistance + d * 2.0f;
+            Vector3 point = vertexPath.GetPointAtDistance(distance, EndOfPathInstruction.Loop);
+            point.y += 0.5f;
+            if (listEmpty)
+            {
+                GameObject ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                ball.GetComponent<SphereCollider>().enabled = false;
+                ball.transform.parent = Balls.transform;
+                ball.transform.localScale = (Vector3.one / 2);
+                ballList.Add(ball);
+                ball.transform.localPosition = point;
+            }
+            else
+            {
+                GameObject ball = ballList[d - t_s];
+                ball.transform.localPosition = point;
+            }
+        }
     }
 }
