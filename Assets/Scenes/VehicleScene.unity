@@ -605,7 +605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _cameras.cameras.Array.size
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _vehicleTorque.engineTorque
@@ -656,12 +656,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.data[1]._camera
+      value: 
+      objectReference: {fileID: 933856792}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _cameras.cameras.Array.data[5]._camera
       value: 
       objectReference: {fileID: 933856792}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _cameras.cameras.Array.data[0].rotationType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.data[1].rotationType
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _cameras.cameras.Array.data[5].rotationType
