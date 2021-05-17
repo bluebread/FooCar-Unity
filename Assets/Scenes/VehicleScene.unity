@@ -181,8 +181,8 @@ MonoBehaviour:
   lossctrl_time: 0
   lossctrl_Xaxis_ratio: 0
   lossctrl_Zaxis_ratio: 0
+  showTickerTrail: 0
   ballList: []
-  Balls: {fileID: 365472523}
 --- !u!4 &223689115
 Transform:
   m_ObjectHideFlags: 0
@@ -318,7 +318,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &901969510 stripped
 GameObject:
@@ -371,7 +371,6 @@ MonoBehaviour:
   LossRightWheelBreak: 0
   vehicleControl: {fileID: 1180845374}
   agentType: 1
-  show2ndAction: 0
 --- !u!114 &901969516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,6 +412,7 @@ GameObject:
   - component: {fileID: 933856793}
   - component: {fileID: 933856792}
   - component: {fileID: 933856791}
+  - component: {fileID: 933856794}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -478,13 +478,39 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 933856790}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &933856794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933856790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 436275a13d4459746955fc6db5953473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _active: 1
+  _enableRotation: 1
+  _mouseSense: 1.8
+  _enableTranslation: 1
+  _translationSpeed: 55
+  _enableMovement: 1
+  _movementSpeed: 10
+  _boostedSpeed: 50
+  _boostSpeed: 304
+  _moveUp: 101
+  _moveDown: 113
+  _enableSpeedAcceleration: 1
+  _speedAccelerationFactor: 1.5
+  _initPositonButton: 114
 --- !u!1 &1180845374 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1417274621101168, guid: b6883ab16065ce74589a2e2f0874e149, type: 3}
@@ -562,6 +588,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.setLayers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _sounds.engineSound
       value: 
       objectReference: {fileID: 8300000, guid: ea2f6284fb2d5a44784c012c3c786f87, type: 3}
@@ -572,6 +602,10 @@ PrefabInstance:
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _sounds.speedOfEngineSound
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.size
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _vehicleTorque.engineTorque
@@ -614,8 +648,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.data[5].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
       propertyPath: _wheels.rightRearWheel.wheelHandBrake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.data[5]._camera
+      value: 
+      objectReference: {fileID: 933856792}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.data[0].rotationType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474787141420838, guid: 304750f05d67d584b81641193636032f, type: 3}
+      propertyPath: _cameras.cameras.Array.data[5].rotationType
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 304750f05d67d584b81641193636032f, type: 3}
@@ -712,7 +762,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114377021978642006, guid: b6883ab16065ce74589a2e2f0874e149, type: 3}
       propertyPath: controls.enable_switchingCameras_Input
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6883ab16065ce74589a2e2f0874e149, type: 3}

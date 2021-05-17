@@ -90,7 +90,7 @@ public class VehicleCamerasClassFree {
 public class CameraTypeClassFree {
 	[Tooltip("A camera must be associated with this variable. The camera that is associated here, will receive the settings of this index.")]
 	public Camera _camera;
-	public enum TipoRotac{LookAtThePlayer, FirstPerson, FollowPlayer, Orbital, Stop, StraightStop, OrbitalThatFollows,ETS_StyleCamera}
+	public enum TipoRotac{LookAtThePlayer, FirstPerson, FollowPlayer, Orbital, Stop, StraightStop, OrbitalThatFollows,ETS_StyleCamera,Fly_Camera}
 	[Tooltip("Here you must select the type of rotation and movement that camera will possess.")]
 	public TipoRotac rotationType = TipoRotac.LookAtThePlayer;
 	[Range(0.01f,1.0f)][Tooltip("Here you must adjust the volume that the camera attached to this element can perceive. In this way, each camera can perceive a different volume.")]

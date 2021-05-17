@@ -165,8 +165,5 @@ public class FooAgent : Agent
         var continuousActionsOut = actionsOut.ContinuousActions;
         continuousActionsOut[0] = Input.GetAxis("Horizontal");
         continuousActionsOut[1] = Input.GetAxis("Vertical");
-
-        //if (agentType == AgentType.Vehicle)
-        //    continuousActionsOut[2] = 1 - Input.GetAxis("Jump");
     }
 }

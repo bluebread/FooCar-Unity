@@ -8,9 +8,23 @@ using PathCreation;
 [ExecuteInEditMode]
 public class Tester : MonoBehaviour
 {
+    public int BallNumber = 0;
+    private string BallName
+    {
+        get
+        {
+            return "Ball(" + BallNumber + ")";
+        }
+    }
+    private void Awake()
+    {
+        Debug.Log(BallName + ": Awake");
+
+    }
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(BallName + ": Start");
     }
 
     // Update is called once per frame
@@ -22,13 +36,9 @@ public class Tester : MonoBehaviour
     {
         //Debug.Log("PrintOnDisable: script was disabled");
     }
-    public GameObject target;
-    public Vector3 direction = new Vector3(1, 0, 1);
     void OnEnable()
     {
-        Debug.Log("PrintOnEnable: script was enabled");
-        float angle = Vector3.Angle(new Vector3(0, 0, 1), direction);
-        target.transform.eulerAngles = new Vector3(0, angle, 0);
+        Debug.Log(BallName + ": OnEnable");
     }
     
 }

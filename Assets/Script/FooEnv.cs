@@ -267,12 +267,11 @@ public class FooEnv : MonoBehaviour
     }
 
     public List<GameObject> ballList = new List<GameObject>();
-    public GameObject Balls;
     void showAgentObservationTrail()
     {
-        int obsNum = ticker_end - ticker_start + 1;
         VertexPath vertexPath = this.road.pathCreator.path;
         Rigidbody rBody = agent.GetComponent<Rigidbody>();
+        GameObject Balls = GameObject.Find("Balls");
 
         // # Collect Path's basic information
         float centerDistance = vertexPath.GetClosestDistanceAlongPath(agent.transform.localPosition);
