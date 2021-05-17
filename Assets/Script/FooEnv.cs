@@ -234,7 +234,7 @@ public class FooEnv : MonoBehaviour
         lossctrl_Xaxis_ratio = parameters.GetWithDefault("lossctrl_Xaxis_ratio", 1.0f);
         lossctrl_Zaxis_ratio = parameters.GetWithDefault("lossctrl_Zaxis_ratio", 1.0f);
         // Other General Enviroment Parameters
-        showTickerTrail = (parameters.GetWithDefault("showTickerTrail", 1.0f) > 0.0f);
+        showTickerTrail = (parameters.GetWithDefault("showTickerTrail", 0.0f) > 0.0f);
     }
     void SetupAgentConfiguration()
     {
