@@ -126,8 +126,8 @@ public class FooEnv : MonoBehaviour
         float distance = vertexPath.GetClosestDistanceAlongPath(agent.transform.localPosition);
         Vector3 direction = vertexPath.GetDirectionAtDistance(distance);
         float angle = Vector3.Angle(new Vector3(0, 0, 1), direction);
-        agent.transform.eulerAngles = new Vector3(0, angle, 0);
-     
+        agent.transform.rotation = Quaternion.LookRotation(direction);
+        //agent.transform.eulerAngles = new Vector3(0, angle, 0); // Why this is wrong ?!!
     }
 
     void InitializeCarAgentComponent()
