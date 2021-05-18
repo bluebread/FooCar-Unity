@@ -366,6 +366,7 @@ MonoBehaviour:
   LossRightWheelBreak: 0
   vehicleControl: {fileID: 1180845374}
   agentType: 1
+  resetKey: 120
 --- !u!114 &901969516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,7 +506,7 @@ MonoBehaviour:
   _moveDown: 113
   _enableSpeedAcceleration: 1
   _speedAccelerationFactor: 1.5
-  _initPositonButton: 114
+  _initPositonButton: 0
 --- !u!1 &1180845374 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1417274621101168, guid: b6883ab16065ce74589a2e2f0874e149, type: 3}
