@@ -60,24 +60,30 @@ public class FooAgent : Agent
     public enum AgentType { Ball, Vehicle };
     public AgentType agentType = AgentType.Vehicle;
 
+    public KeyCode resetKey = KeyCode.R;
+
     void Start()
     {
 
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(resetKey))
+        {
+            SetReward(failure_penalty);
+            EndEpisode();
+        }
+    }
+
     public override void OnEpisodeBegin()
     {
-        //if (startPosition.Equals(default(Vector3)))
-        //    startPosition = this.transform.localPosition;
-
         Rigidbody rBody = GetComponent<Rigidbody>();
-        if (this.transform.localPosition.y < 0)
-        {
-            rBody.angularVelocity = Vector3.zero;
-            rBody.velocity = Vector3.zero;
-            transform.localPosition = startPosition;
-            transform.eulerAngles = startAngles;
-        }
+
+        rBody.angularVelocity = Vector3.zero;
+        rBody.velocity = Vector3.zero;
+        transform.localPosition = startPosition;
+        transform.eulerAngles = startAngles;
     }
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -121,7 +127,6 @@ public class FooAgent : Agent
             sensor.AddObservation(vec.z);
         }
     }
-
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         switch(agentType)
