@@ -143,7 +143,7 @@ public class FooAgent : Agent
         }
         else
         {
-            SetReward(rBody.velocity.sqrMagnitude + running_penalty);
+            SetReward(rBody.velocity.magnitude + running_penalty);
         }
     }
     public void BallActionReceived(ActionBuffers actionBuffers)
@@ -151,8 +151,8 @@ public class FooAgent : Agent
         // Actions, size = 2
         Rigidbody rBody = GetComponent<Rigidbody>();
         Vector3 controlSignal = Vector3.zero;
-        controlSignal.x = actionBuffers.ContinuousActions[0] * ctrlXaxisMultiplier;
-        controlSignal.z = actionBuffers.ContinuousActions[1] * ctrlZaxisMultiplier;
+        controlSignal.x = clampInput(actionBuffers.ContinuousActions[0]) * ctrlXaxisMultiplier;
+        controlSignal.z = clampInput(actionBuffers.ContinuousActions[1]) * ctrlZaxisMultiplier;
         rBody.AddForce(controlSignal * forceMultiplier + windForce);
     }
     //public float show2ndAction = 0.0f;
@@ -162,8 +162,13 @@ public class FooAgent : Agent
 
         Rigidbody rBody = GetComponent<Rigidbody>();
         MSSceneControllerFree sceneController = vehicleControl.GetComponent<MSSceneControllerFree>();
-        sceneController.horizontalInput = actionBuffers.ContinuousActions[0] * ctrlXaxisMultiplier;
-        sceneController.verticalInput = actionBuffers.ContinuousActions[1] * ctrlZaxisMultiplier;
+        sceneController.horizontalInput = clampInput(actionBuffers.ContinuousActions[0]) * ctrlXaxisMultiplier;
+        sceneController.verticalInput = clampInput(actionBuffers.ContinuousActions[1]) * ctrlZaxisMultiplier;
+    }
+    public float clampInput(float input)
+    {
+        if (float.IsNaN(input) || float.IsInfinity(input)) return 0.0f;
+        return Mathf.Clamp(input, -1.0f, 1.0f);
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {

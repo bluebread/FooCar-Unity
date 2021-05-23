@@ -51,6 +51,21 @@ public class FooEnv : MonoBehaviour
     // private
     RoadObject road;
 
+    private bool SampleSignal
+    {
+        get
+        {
+            return (Academy.Instance.EnvironmentParameters.GetWithDefault("__SampleSignal", 0.0f) > 0.0f);
+        }
+    }
+    private bool OperateSignal
+    {
+        get
+        {
+            return (Academy.Instance.EnvironmentParameters.GetWithDefault("__OperateSignal", 0.0f) > 0.0f);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -153,9 +168,12 @@ public class FooEnv : MonoBehaviour
     }
     void ResetEnviroment()
     {
-        if (road != null && !road.Equals(default(RoadObject)))
-            road.DestroyGameObject();
-        InitializeEnviroment();
+        if (! OperateSignal || SampleSignal)
+        {
+            if (road != null && !road.Equals(default(RoadObject)))
+                road.DestroyGameObject();
+            InitializeEnviroment();
+        }
         ClearAgentAccident();
         RegisterAccidents();
     }
@@ -202,9 +220,9 @@ public class FooEnv : MonoBehaviour
         EnvironmentParameters parameters = Academy.Instance.EnvironmentParameters;
         // Random Anchors & BezierPath Parameters
         num_anchors = (int)parameters.GetWithDefault("num_anchors", 10.0f);
-        radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 40.0f);
-        radius_epsilon_ratio = parameters.GetWithDefault("radius_epsilon_ratio", 0.4f);
-        theta_epsilon_ratio = parameters.GetWithDefault("theta_epsilon_ratio", 0.4f);
+        radius_anchor_circle = parameters.GetWithDefault("radius_anchor_circle", 20.0f);
+        radius_epsilon_ratio = parameters.GetWithDefault("radius_epsilon_ratio", 0.5f);
+        theta_epsilon_ratio = parameters.GetWithDefault("theta_epsilon_ratio", 0.5f);
         max_anchor_height = parameters.GetWithDefault("max_anchor_height", 3.0f);
         max_anchor_angle = parameters.GetWithDefault("max_anchor_angle", 15.0f);
         path_space = (PathSpace)parameters.GetWithDefault("path_space", (float)PathSpace.xz);
@@ -212,8 +230,8 @@ public class FooEnv : MonoBehaviour
         // Agent Setting
         agent_mass = parameters.GetWithDefault("agent_mass", 1.0f);
         force_multiplier = parameters.GetWithDefault("force_multiplier", 10.0f);
-        ticker_start = (int)parameters.GetWithDefault("ticker_start", -3.0f);
-        ticker_end = (int)parameters.GetWithDefault("ticker_end", 5.0f);
+        ticker_start = (int)parameters.GetWithDefault("ticker_start", -5.0f);
+        ticker_end = (int)parameters.GetWithDefault("ticker_end", 15.0f);
         ticker_space = parameters.GetWithDefault("ticker_space", 0.0f);
         running_penalty = parameters.GetWithDefault("running_penalty", -5.0f);
         failure_penalty = parameters.GetWithDefault("failure_penalty", -100.0f);
@@ -234,7 +252,7 @@ public class FooEnv : MonoBehaviour
         lossctrl_Xaxis_ratio = parameters.GetWithDefault("lossctrl_Xaxis_ratio", 1.0f);
         lossctrl_Zaxis_ratio = parameters.GetWithDefault("lossctrl_Zaxis_ratio", 1.0f);
         // Other General Enviroment Parameters
-        showTickerTrail = (parameters.GetWithDefault("showTickerTrail", 0.0f) > 0.0f);
+        showTickerTrail = (parameters.GetWithDefault("showTickerTrail", 1.0f) > 0.0f);
     }
     void SetupAgentConfiguration()
     {
@@ -265,7 +283,6 @@ public class FooEnv : MonoBehaviour
         if (showTickerTrail)
             showAgentObservationTrail();
     }
-
     public List<GameObject> ballList = new List<GameObject>();
     void showAgentObservationTrail()
     {

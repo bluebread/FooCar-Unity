@@ -453,7 +453,7 @@ MonoBehaviour:
   LossRightWheelBreak: 0
   vehicleControl: {fileID: 0}
   agentType: 0
-  resetKey: 120
+  resetKey: 114
 --- !u!114 &715392780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 100
+    VectorObservationSize: 200
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
